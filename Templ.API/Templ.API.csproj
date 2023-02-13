@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMediator" Version="0.4.7" />
+    <PackageReference Include="FluentMediator.Microsoft.Extensions.DependencyInjection" Version="0.4.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Templ.Application\Templ.Application.csproj" />
+    <ProjectReference Include="..\Templ.Domain\Templ.Domain.csproj" />
+    <ProjectReference Include="..\Templ.Infrastucture\Templ.Infrastucture.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,82 @@
+﻿<DataGrid x:Class="Templ.WCustomers.Views.FilteredGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"          
+    Name="filteredGrid"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Top" 
+    CanUserAddRows="False"
+    IsReadOnly="True"
+    CanUserDeleteRows="False"
+    AutoGenerateColumns="False">
+    
+    <DataGrid.Columns>
+        <DataGridTemplateColumn>
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <Button 
+                        Command="{Binding DataContext.ShowEditCustomerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding SelectedItem, ElementName=filteredGrid}">
+                        <Button.Content>
+                            <fa:IconBlock Icon="Edit" Foreground="DarkGray"/>
+                        </Button.Content>
+                    </Button>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTextColumn Binding="{Binding Name}">
+            <DataGridTextColumn.Header>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Name" />
+                    <TextBox Grid.Column="0" 
+                            KeyDown="TextBox_KeyDown"
+                            ToolTip="Click [Enter] to search" />
+                </StackPanel>
+            </DataGridTextColumn.Header>
+        </DataGridTextColumn>
+        <DataGridTextColumn Binding="{Binding CompanyName}">
+            <DataGridTextColumn.Header>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Company Name" />
+                    <TextBox Grid.Column="0" 
+                            KeyDown="TextBox_KeyDown"
+                            ToolTip="Click [Enter] to search"/>
+                </StackPanel>
+            </DataGridTextColumn.Header>
+        </DataGridTextColumn>
+        <DataGridTextColumn Binding="{Binding Phone}" >
+            <DataGridTextColumn.Header>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Phone" />
+                    <TextBox Grid.Column="0" 
+                            KeyDown="TextBox_KeyDown"
+                            ToolTip="Click [Enter] to search"/>
+                </StackPanel>
+            </DataGridTextColumn.Header>
+        </DataGridTextColumn>
+        <DataGridTextColumn Binding="{Binding Email}" >
+            <DataGridTextColumn.Header>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Email" />
+                    <TextBox Grid.Column="0" 
+                            KeyDown="TextBox_KeyDown"
+                            ToolTip="Click [Enter] to search"/>
+                </StackPanel>
+            </DataGridTextColumn.Header>
+        </DataGridTextColumn>
+        <DataGridTemplateColumn>
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <Button
+                        Command="{Binding DataContext.ShowDeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding SelectedItem, ElementName=filteredGrid}">
+                        <Button.Content>
+                            <fa:IconBlock Icon="Remove" Foreground="Chocolate"/>
+                        </Button.Content>
+                    </Button>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+    </DataGrid.Columns>
+</DataGrid>
