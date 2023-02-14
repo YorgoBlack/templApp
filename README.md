@@ -1,8 +1,6 @@
 "# templApp" 
 
-1. Templ.API - server
-
-2. To create MS SQL database  run Templ.Infastructure/init.sql
-
-3. Templ.WCustomers - WPF client
+1. Create MS SQL database run Templ.Infastructure/init.sql
+2. Run Server Templ.API
+3. Run WPF client Templ.WCustomers
 
