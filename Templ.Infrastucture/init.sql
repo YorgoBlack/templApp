@@ -15,7 +15,7 @@ CREATE TABLE Customer
 	[Name] VARCHAR (50) NOT NULL,
 	CompanyName VARCHAR (100) NOT NULL,
 	CompanyAddress VARCHAR (100) NOT NULL,
-	Phone VARCHAR (20),
+	Phone VARCHAR (20) NOT NULL,
 	Email VARCHAR (50) NOT NULL,
 )
 GO
@@ -28,22 +28,50 @@ GO
 
 Create Procedure GetCustomers
 (
- @start int = 0,  
+ @top int = 1,  
  @limit int = 10,
  @orderByColumn int = 1,
- @filterByColumn int = 0,
- @filterByText varchar(50) = ''
+ @orderByDesc int = 0, 
+ @filterByName varchar(50) = '_',
+ @filterByCompanyName varchar(50) = '_',
+ @filterByPhone varchar(50) = '_',
+ @filterByEmail varchar(50) = '_'
 )  
 As  
 Begin  
 SET NOCOUNT ON;
-select *  
-from Customer
+
+declare @Sort int
+set @Sort = @orderByColumn*10 + @orderByDesc
+set @top = @top - 1
+if @top < 0 
+	set @top = 0
+if @limit <= 0 
+	set @limit = 10
+
+
+select * from Customer
+
+where 
+
+	[Name] like case when @filterByName = '_' then  [Name]  else '%'+@filterByName+'%' end And
+
+	CompanyName like case when @filterByCompanyName = '_' then  CompanyName  else '%'+@filterByCompanyName+'%' end And
+
+	Phone like case when @filterByPhone = '_' then Phone else '%'+@filterByPhone+'%' end And
+
+	Email like case when @filterByEmail = '_' then Email else '%'+@filterByEmail+'%' end
+
 Order by 
-case @orderByColumn
-	when 1 then [Name]
-	when 2 then [CompanyName]
-end
-OFFSET @start Rows  
+	case @Sort when 10 then [Name] end asc, 
+	case @Sort when 11 then [Name] end desc,
+	case @Sort when 20 then [CompanyName] end asc, 
+	case @Sort when 21 then [CompanyName] end desc,
+	case @Sort when 30 then [Phone] end asc, 
+	case @Sort when 31 then [Phone] end desc,
+	case @Sort when 40 then [Email] end asc, 
+	case @Sort when 41 then [Email] end desc
+
+OFFSET @top Rows  
 Fetch NEXT @limit ROWS ONLY  
 End  

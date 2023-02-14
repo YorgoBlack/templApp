@@ -3,19 +3,21 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace Templ.WCustomers.ViewModels;
 using Shared;
 using Models;
 using Services;
 using System;
-using System.Windows.Threading;
-using System.Windows;
+using Helpers;
 
 public class MainViewModel : BaseRoutedViewModel
 {
     private readonly ICustomerService _customerService;
-    private readonly CustomerQueryParams _customerQueryParams = new();
+
+    public NavigationViewModel Navigation { get; set; }
 
     public ICommand ShowNewCustomerCommand { get; set; }
     
@@ -23,7 +25,7 @@ public class MainViewModel : BaseRoutedViewModel
 
     public ICommand ShowDeleteCustomerCommand { get; set; }
 
-    public ICommand RefreshCustomersCommand { get; set; }
+    public ICommand FilterCommand { get; set; }
 
     public ICommand TopCommand { get; set; }
 
@@ -31,31 +33,12 @@ public class MainViewModel : BaseRoutedViewModel
 
     public ICommand NextCommand { get; set; }
 
-
     public ObservableCollection<Customer> Customers { get; set; } = null!;
-
-    public int _pageSizeIndex;
-    public int PageSize { 
-        get => _pageSizeIndex;
-        set {
-            _pageSizeIndex = value;
-            PageSizeChange();
-        } 
-    }
-
-    public int _pageNo = 1;
-    public int PageNo
-    {
-        get => _pageNo;
-        set
-        {
-            _pageNo = value;
-        }
-    }
 
     public MainViewModel(IViewsRoute viewsRoute, ICustomerService customerService) : base(viewsRoute)
     {
         _customerService = customerService;
+        Navigation = new(this);
 
         ShowNewCustomerCommand = new RelayCommand( () => 
         {
@@ -76,38 +59,49 @@ public class MainViewModel : BaseRoutedViewModel
             ViewsRoute.Route(new DeleteCustomerViewModel(this, _customerService, customer));
         });
 
+        FilterCommand = new RelayCommand<FilterCommandAgruments>(async (filter) => {
+            if( filter != null )
+                await RefreshCustomersAsync(Navigation.QueryParams(filter));
+        });
+
         TopCommand = new RelayCommand(async () => {
-            BuilQueryParams("top");
-            await RefreshCustomersAsync();
+            await RefreshCustomersAsync(Navigation.QueryParams("top"));
         });
 
         PrevCommand = new RelayCommand(async () => {
-            BuilQueryParams("prev");
-            await RefreshCustomersAsync();
+            await RefreshCustomersAsync(Navigation.QueryParams("prev"));
         });
 
         NextCommand = new RelayCommand(async () => {
-            BuilQueryParams("next");
-            await RefreshCustomersAsync();
+            await RefreshCustomersAsync(Navigation.QueryParams("next"));
         });
 
-        RefreshCustomersCommand = new RelayCommand(async () => await RefreshCustomersAsync() );
+        Task.Run(async () => 
+            await RefreshCustomersAsync(Navigation.QueryParams()));
+    }
+    public async Task RefreshCustomersAsync()
+        => await RefreshCustomersAsync(Navigation.QueryParams());
 
-        OnPropertyChanged(nameof(PageSize));
-        OnPropertyChanged(nameof(PageNo));
-
-        Task.Run(async () => await RefreshCustomersAsync() );
+    public async void RefreshCustomers()
+    {
+        await Dispatcher.CurrentDispatcher.InvokeAsync(async () => {
+            await RefreshCustomersAsync(Navigation.QueryParams());
+        });
     }
 
-    public async Task RefreshCustomersAsync()
+    private async Task RefreshCustomersAsync(CustomerQueryParams queryParams)
     {
         ViewsRoute.Route(new LoadingViewModel(ViewsRoute));
         try
         {
+            // TODO responsiveness debug
             await Task.Delay(2000);
-            var dtos = await _customerService.QueryCustomersAsync(_customerQueryParams);
+            var dtos = await _customerService.QueryCustomersAsync(queryParams);
+
+            Navigation.IsHasRecords = !dtos.IsLastRecords; 
+
             Customers?.Clear();
-            Customers = new ObservableCollection<Customer>(dtos
+            Customers = new ObservableCollection<Customer>(dtos.Records
                 .Select(c => new Customer(c.Id, c.Name, c.CompanyName, c.CompanyAddress, c.Phone, c.Email)));
 
             OnPropertyChanged(nameof(Customers));
@@ -119,42 +113,4 @@ public class MainViewModel : BaseRoutedViewModel
             ViewsRoute.Route(new AlertViewModel(ViewsRoute, ex.Message));
         }
     }
-
-    private async void PageSizeChange()
-    {
-        await Dispatcher.CurrentDispatcher.InvokeAsync(async () => {
-            BuilQueryParams("pageSize");
-            await RefreshCustomersAsync();
-        });
-    }
-
-    bool BuilQueryParams(string action)
-    {
-        switch (action)
-        {
-            case "top":
-                _customerQueryParams.Page = 1;
-                return true;
-
-            case "next":
-                _customerQueryParams.Page++;
-                return true;
-                
-
-            case "prev":
-                if (_customerQueryParams.PageSize > 1) _customerQueryParams.Page--;
-                return true;
-
-            case "pagesize":
-                _customerQueryParams.PageSize = PageSize;
-                return true;
-
-            default: 
-                break;
-        }
-
-        return false;
-
-    }
-
 }

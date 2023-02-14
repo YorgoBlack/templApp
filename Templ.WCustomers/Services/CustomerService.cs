@@ -20,7 +20,7 @@ public class CustomerService : ICustomerService
         _client = new Client(url, HttpClient);
     }
 
-    public async Task<IEnumerable<CustomerDto>> QueryCustomersAsync(CustomerQueryParams queryParams)
+    public async Task<CustomerQueryResult> QueryCustomersAsync(CustomerQueryParams queryParams)
     {
         return await _client.QueryAsync(queryParams);
     }

@@ -10,18 +10,15 @@ using Templ.Domain.Customers.ValueObjects;
 [Route("[controller]/[action]")]
 public partial class CustomersController : ControllerBase
 {
-
-    private readonly ILogger<CustomersController> _logger;
     private readonly ICustomerService _customerService;
 
-    public CustomersController(ICustomerService customerService, ILogger<CustomersController> logger)
+    public CustomersController(ICustomerService customerService)
     {
-        _logger = logger;
         _customerService = customerService;
     }
 
     [HttpPost(Name = "Query")]
-    [ProducesResponseType(typeof(IEnumerable<CustomerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CustomerQueryResult), StatusCodes.Status200OK)]
     public IActionResult Query([FromBody] CustomerQueryParams queryParams)
     {
         return Ok(_customerService.Query(queryParams));
@@ -45,7 +42,6 @@ public partial class CustomersController : ControllerBase
     {
         return Ok(await _customerService.ValidateCustomerName(id, customerName));
     }
-
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<CustomerDto>), StatusCodes.Status200OK)]

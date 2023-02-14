@@ -15,6 +15,6 @@ namespace Templ.Application.Services
         Task<CustomerDto> Create(CustomerDto dto);
         Task<CustomerDto> Update(CustomerDto dto);
         Task<int> Delete(Guid id);
-        IEnumerable<CustomerDto> Query(CustomerQueryParams queryParams);
+        CustomerQueryResult Query(CustomerQueryParams queryParams);
     }
 }

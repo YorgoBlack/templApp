@@ -11,7 +11,7 @@ public class Customer : IAggregateRoot
         Name = name;
         Company = company;
         Email = email;
-        Phone = phone;
+        Phone = phone ?? string.Empty;
     }
     public Guid CustomerId { get; set; }
 
@@ -21,6 +21,6 @@ public class Customer : IAggregateRoot
 
     public string Email { get; set; } = null!;
 
-    public string? Phone { get; set; } 
+    public string Phone { get; set; } = null!;
 }
 

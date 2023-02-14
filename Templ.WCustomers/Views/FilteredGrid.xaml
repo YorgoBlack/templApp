@@ -3,18 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"          
     Name="filteredGrid"
-    HorizontalAlignment="Stretch"
     VerticalAlignment="Top" 
     CanUserAddRows="False"
+    CanUserResizeColumns="False"
     IsReadOnly="True"
     CanUserDeleteRows="False"
+    CanUserSortColumns="False"
     AutoGenerateColumns="False">
     
     <DataGrid.Columns>
         <DataGridTemplateColumn>
             <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                    <Button 
+                    <Button
                         Command="{Binding DataContext.ShowEditCustomerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         CommandParameter="{Binding SelectedItem, ElementName=filteredGrid}">
                         <Button.Content>
@@ -25,43 +26,43 @@
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
 
-        <DataGridTextColumn Binding="{Binding Name}">
+        <DataGridTextColumn 
+            Width="0.4*" MinWidth="100"
+            Binding="{Binding Name}">
             <DataGridTextColumn.Header>
                 <StackPanel Orientation="Vertical">
-                    <Label Content="Name" />
-                    <TextBox Grid.Column="0" 
-                            KeyDown="TextBox_KeyDown"
-                            ToolTip="Click [Enter] to search" />
+                    <Label ToolTip="[Enter] to search" Content="Name" />
+                    <TextBox Grid.Column="0" KeyDown="TextBox_KeyDown"/>
                 </StackPanel>
             </DataGridTextColumn.Header>
         </DataGridTextColumn>
-        <DataGridTextColumn Binding="{Binding CompanyName}">
+        <DataGridTextColumn 
+            Width="*" MinWidth="120"
+            Binding="{Binding CompanyName}">
             <DataGridTextColumn.Header>
                 <StackPanel Orientation="Vertical">
-                    <Label Content="Company Name" />
-                    <TextBox Grid.Column="0" 
-                            KeyDown="TextBox_KeyDown"
-                            ToolTip="Click [Enter] to search"/>
+                    <Label ToolTip="[Enter] to search" Content="Company Name" />
+                    <TextBox Grid.Column="0" KeyDown="TextBox_KeyDown"/>
                 </StackPanel>
             </DataGridTextColumn.Header>
         </DataGridTextColumn>
-        <DataGridTextColumn Binding="{Binding Phone}" >
+        <DataGridTextColumn 
+            Width="0.2*" MinWidth="100"
+            Binding="{Binding Phone}" >
             <DataGridTextColumn.Header>
                 <StackPanel Orientation="Vertical">
-                    <Label Content="Phone" />
-                    <TextBox Grid.Column="0" 
-                            KeyDown="TextBox_KeyDown"
-                            ToolTip="Click [Enter] to search"/>
+                    <Label ToolTip="[Enter] to search" Content="Phone" />
+                    <TextBox Grid.Column="0" KeyDown="TextBox_KeyDown"/>
                 </StackPanel>
             </DataGridTextColumn.Header>
         </DataGridTextColumn>
-        <DataGridTextColumn Binding="{Binding Email}" >
+        <DataGridTextColumn 
+            Width="0.2*" MinWidth="100"
+            Binding="{Binding Email}" >
             <DataGridTextColumn.Header>
                 <StackPanel Orientation="Vertical">
-                    <Label Content="Email" />
-                    <TextBox Grid.Column="0" 
-                            KeyDown="TextBox_KeyDown"
-                            ToolTip="Click [Enter] to search"/>
+                    <Label ToolTip="[Enter] to search" Content="Email" />
+                    <TextBox Grid.Column="0" KeyDown="TextBox_KeyDown"/>
                 </StackPanel>
             </DataGridTextColumn.Header>
         </DataGridTextColumn>

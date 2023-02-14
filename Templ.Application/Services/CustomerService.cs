@@ -60,11 +60,16 @@ public class CustomerService : ICustomerService
         return customer.CustomerId == id;
     }
 
-    public IEnumerable<CustomerDto> Query(CustomerQueryParams queryParams)
+    public CustomerQueryResult Query(CustomerQueryParams queryParams)
     {
+        queryParams.PageSize++;
         var customers = _customerQuery.Query(queryParams);
-        var models = customers.Select(i => _mapper.Map<CustomerDto>(i));
-        return models;
+        var records = customers.Select(i => _mapper.Map<CustomerDto>(i));
+        return new CustomerQueryResult
+        {
+            IsLastRecords = queryParams.PageSize != records?.Count(),
+            Records = records?.Take(--queryParams.PageSize)
+        };
     }
 
     public async Task<CustomerDto> Update(CustomerDto customerViewModel)

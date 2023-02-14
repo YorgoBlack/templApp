@@ -5,6 +5,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using Templ.Application.Dtos;
 using Templ.Domain.Customers;
 using Templ.Domain.Customers.ValueObjects;
 
@@ -21,7 +22,8 @@ class CustomerQuery : ICustomerQuery
     {
         using System.Data.IDbConnection conn = new SqlConnection(_connectionString);
         conn.Open();
-        return conn.Query<dynamic>($"Exec GetCustomers")
+        var (sql,@params) = query.BuidSql();
+        return conn.Query<dynamic>(sql, @params)
             .Select(item => new Customer()
             {
                 CustomerId = item.CustomerId,

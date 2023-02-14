@@ -54,7 +54,7 @@ namespace Templ.WCustomers.Services
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerDto>> QueryAsync(CustomerQueryParams body)
+        public virtual System.Threading.Tasks.Task<CustomerQueryResult> QueryAsync(CustomerQueryParams body)
         {
             return QueryAsync(body, System.Threading.CancellationToken.None);
         }
@@ -62,7 +62,7 @@ namespace Templ.WCustomers.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerDto>> QueryAsync(CustomerQueryParams body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CustomerQueryResult> QueryAsync(CustomerQueryParams body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Customers/Query");
@@ -103,7 +103,7 @@ namespace Templ.WCustomers.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<CustomerDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CustomerQueryResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -722,23 +722,62 @@ namespace Templ.WCustomers.Services
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CustomerQueryParams
     {
-        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? Page { get; set; }
+        [Newtonsoft.Json.JsonProperty("top", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Top { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("pageSize", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? PageSize { get; set; }
+        [Newtonsoft.Json.JsonProperty("pageSize", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int PageSize { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("orderBy", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string OrderBy { get; set; }
+        [Newtonsoft.Json.JsonProperty("orderBy", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public OrderByField OrderBy { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("orderByAsc", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? OrderByAsc { get; set; }
+        [Newtonsoft.Json.JsonProperty("orderByDesc", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool OrderByDesc { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("filterBy", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> FilterBy { get; set; }
+        [Newtonsoft.Json.JsonProperty("filterName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FilterName { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("filterByText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> FilterByText { get; set; }
+        [Newtonsoft.Json.JsonProperty("filterCompanyName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FilterCompanyName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("filterPhone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FilterPhone { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("filterEmail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FilterEmail { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CustomerQueryResult
+    {
+        [Newtonsoft.Json.JsonProperty("records", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<CustomerDto> Records { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isLastRecords", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsLastRecords { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum OrderByField
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"None")]
+        None = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Name")]
+        Name = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CompanyName")]
+        CompanyName = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Phone")]
+        Phone = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Email")]
+        Email = 4,
 
     }
 

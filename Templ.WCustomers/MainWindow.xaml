@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         xmlns:local="clr-namespace:Templ.WCustomers"
         xmlns:Views="clr-namespace:Templ.WCustomers.Views"
@@ -56,16 +57,31 @@
                         Command="{Binding ShowNewCustomerCommand}"
                         Content="New Customer" Grid.Column="0"/>
                     <WrapPanel Grid.Column="2">
-                        <Button 
-                            Command="{Binding RefreshCustomersCommand}"
-                            Content="Refresh"/>
-                        <Button Content="Reset Filter" Margin="20,0,5,0"/>
+                    <Label Content="Sort By"/>
+                    <ComboBox 
+                        SelectedValue="{Binding Navigation.SortByField, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                        <sys:String>None</sys:String>
+                        <sys:String>Name</sys:String>
+                        <sys:String>Company</sys:String>
+                        <sys:String>Phone</sys:String>
+                        <sys:String>Email</sys:String>
+                    </ComboBox>
+                    <CheckBox 
+                        IsEnabled="{Binding Navigation.SortByDescendingEnebled, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                        IsChecked="{Binding Navigation.SortByDescending, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="Desc"
+                        Margin="2,0,5,0"/>
                     </WrapPanel>
 
                 </Grid>
                 <Grid Grid.Row="1">
                     <WrapPanel>
-                    <Views:FilteredGrid 
+                    <Views:FilteredGrid
+                        FilterCommand="{Binding FilterCommand}"
+                        Padding="2,5,5,5"
+                        Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Grid}}"
                         ItemsSource="{Binding Customers, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                     </WrapPanel>
                 </Grid>
@@ -76,9 +92,11 @@
                     </Grid.ColumnDefinitions>
                     <WrapPanel Grid.Column="1">
                         <Button 
+                            IsEnabled="{Binding Navigation.IsCanMovePrev}"
                             Command="{Binding TopCommand}"
                             Content="Top" Width="40"/>
                         <Button 
+                            IsEnabled="{Binding Navigation.IsCanMovePrev}"
                             Command="{Binding PrevCommand}"
                             Content="Prev" Width="40"/>
                         <Label 
@@ -86,8 +104,9 @@
                             BorderBrush="LightGray"
                             BorderThickness="1"
                             HorizontalContentAlignment="Center"
-                            Content="{Binding PageNo, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"  Width="40"/>
+                            Content="{Binding Navigation.PageNo, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"  Width="40"/>
                         <Button 
+                            IsEnabled="{Binding Navigation.IsHasRecords, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             Command="{Binding NextCommand}"
                             Content="Next" Width="40"/>
                         <Label 
@@ -95,12 +114,12 @@
                         HorizontalContentAlignment="Right"
                         Content="Page size"/>
                         <ComboBox Width="50" 
-                              SelectedIndex="{Binding PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedValue="{Binding Navigation.PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               VerticalContentAlignment="Center">
-                            <ComboBoxItem IsSelected="True">10</ComboBoxItem>
-                            <ComboBoxItem>50</ComboBoxItem>
-                            <ComboBoxItem>100</ComboBoxItem>
-                            <ComboBoxItem>2</ComboBoxItem>
+                            <sys:Int32>10</sys:Int32>
+                            <sys:Int32>50</sys:Int32>
+                            <sys:Int32>100</sys:Int32>
+                            <sys:Int32>2</sys:Int32>
                         </ComboBox>
                     </WrapPanel>
                 </Grid>

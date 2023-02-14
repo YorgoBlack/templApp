@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Templ.API;
 using Templ.API.Extensions;
 using Templ.Infrastucture;
@@ -6,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 
-services.AddControllers();
+services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 services.AddEndpointsApiExplorer();
 
