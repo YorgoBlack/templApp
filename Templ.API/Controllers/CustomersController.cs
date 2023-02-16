@@ -5,9 +5,11 @@ using Application.Services;
 using Application.Dtos;
 using System.Runtime.Serialization;
 using Templ.Domain.Customers.ValueObjects;
+using Templ.API.Middleware;
 
 [ApiController]
 [Route("[controller]/[action]")]
+[Authorize]
 public partial class CustomersController : ControllerBase
 {
     private readonly ICustomerService _customerService;

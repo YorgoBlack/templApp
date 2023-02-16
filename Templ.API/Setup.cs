@@ -10,19 +10,23 @@ using Domain.Customers.Commands;
 using Infrastucture.Factories;
 using Infrastucture.Repositories;
 using Templ.Infrastucture;
+using Templ.Infrastucture.Services;
 
 static class Setup
 {
     public static void InstallAppServices(IServiceCollection services, ConfigurationManager cm)
     {
         var conn = cm.GetSection("ConnectionStrings")["TemplDb"];
-        var configuration = new Configuration(conn!);
-        
+        var liteDb = cm.GetSection("LocalStorage")["LiteDb"];
+        var secret = cm.GetSection("Jwt")["SecretKey"];
+        var configuration = new AppConfiguration(conn!,liteDb!, secret!);
 
         services.AddRepository(configuration);
 
         services.AddSingleton<IAppConfiguration>(configuration);
 
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ICustomerRepository, CustomerRespository>();
         services.AddSingleton(new MapperConfiguration(c => c
