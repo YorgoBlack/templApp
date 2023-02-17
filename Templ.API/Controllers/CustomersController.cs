@@ -9,7 +9,7 @@ using Templ.API.Middleware;
 
 [ApiController]
 [Route("[controller]/[action]")]
-[Authorize]
+//[Authorize]
 public partial class CustomersController : ControllerBase
 {
     private readonly ICustomerService _customerService;
