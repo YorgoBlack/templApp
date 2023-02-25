@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Templ.API.Middleware;
 using Templ.Domain;
 using Templ.Infrastucture.Services;
 
@@ -18,14 +19,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost(Name = "Signin")]
-    [ProducesResponseType(typeof(SignInCommand), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult SignIn([FromBody] SignInCommand cmd)
     {
         var user = _userService.ValidatePassword(cmd.UserName, cmd.Password);
-        if( user != null)
+        if (user != null)
         {
-            return Ok( new { 
-                Token = _authService.Token(user.UserName), 
+            return Ok(new {
+                Token = _authService.Token(user.UserName),
                 Message = "Success",
                 UserName = user.SurName
             });
@@ -34,17 +35,34 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost(Name = "Signup")]
-    [ProducesResponseType(typeof(AppUser), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult SignUp([FromBody] AppUser newUser, string password)
     {
         var user = _userService.Create(newUser.UserName, password, newUser.FirstName, newUser.LastName);
         if (user != null)
         {
-            return Ok( new 
+            return Ok(new
             {
                 Token = _authService.Token(user.UserName),
-                Message = "Success", 
+                Message = "Success",
                 UserName = user.SurName
+            });
+        }
+        return StatusCode(StatusCodes.Status403Forbidden);
+    }
+
+    [HttpPost(Name = "Refresh")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Refresh(string token) 
+    {
+        var (user,reToken) = _authService.RefreshToken(token);
+        if( user != null && reToken != null) 
+        {
+            return Ok(new
+            {
+                Token = reToken,
+                Message = "Success",
+                UserName = user
             });
         }
         return StatusCode(StatusCodes.Status403Forbidden);

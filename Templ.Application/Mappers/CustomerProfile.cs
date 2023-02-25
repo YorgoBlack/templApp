@@ -24,6 +24,11 @@ public class CustomerProfile : Profile
         CreateMap<CustomerDto, UpdateCustomerCommand>()
             .ForMember(d => d.Id, o => o.MapFrom(s => Guid.Parse(s.Id)));
 
+        CreateMap<UpdateCustomerCommand, Customer>()
+            .ForMember(d => d.CustomerId, o => o.MapFrom(s => s.Id))
+            .ForMember(d => d.Company, o => o.MapFrom(s => new Company(s.CompanyName, s.CompanyAddress)));
+
+
         CreateMap<Guid, DeleteCustomerCommand>()
             .ForMember(d => d.Id, o => o.MapFrom(s => s));
     }

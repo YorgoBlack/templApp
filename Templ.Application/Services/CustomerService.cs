@@ -16,7 +16,8 @@ public class CustomerService : ICustomerService
     readonly IMediator _mediator;
     readonly ICustomerQuery _customerQuery;
 
-    public CustomerService(ICustomerRepository customerRepository, ICustomerQuery customerQuery, IMapper mapper, IMediator mediator)
+    public CustomerService(ICustomerRepository customerRepository, 
+        ICustomerQuery customerQuery, IMapper mapper, IMediator mediator)
     {
         _customerRepository = customerRepository;
         _customerQuery = customerQuery;
@@ -74,8 +75,8 @@ public class CustomerService : ICustomerService
 
     public async Task<CustomerDto> Update(CustomerDto customerViewModel)
     {
-        var command = _mapper.Map<Customer>(customerViewModel);
-        var result = await _customerRepository.Update(command);
+        var command = _mapper.Map<UpdateCustomerCommand>(customerViewModel);
+        var result = await _mediator.SendAsync<Customer>(command);
         return _mapper.Map<CustomerDto>(result);
     }
 }

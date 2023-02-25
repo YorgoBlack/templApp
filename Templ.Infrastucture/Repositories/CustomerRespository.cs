@@ -17,13 +17,21 @@ public class CustomerRespository : ICustomerRepository
     public async Task<Customer> Add(Customer entity)
     {
         await _context.Set<Customer>().AddAsync(entity);
-        await _context.SaveChangesAsync();
         return entity;
     }
 
     public async Task<Customer> Update(Customer entity)
     {
-        _context.Set<Customer>().Update(entity);
+        var tracking  = _context.Set<Customer>()
+            .Local
+            .FirstOrDefault(e => e.CustomerId.Equals(entity.CustomerId));
+
+        if( tracking != null ) 
+        {
+            _context.Entry(tracking).State = EntityState.Detached;
+        }
+        _context.Entry(entity).State= EntityState.Modified;
+            
         await _context.SaveChangesAsync();
         return entity;
     }
@@ -48,4 +56,6 @@ public class CustomerRespository : ICustomerRepository
         _context.Set<Customer>().Remove(entity);
         return await _context.SaveChangesAsync();
     }
+
+    public Task SaveAsync() => _context.SaveChangesAsync();
 }

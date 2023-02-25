@@ -15,8 +15,6 @@ public class EfDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
     }
 
-    public DbSet<Customer> Customers { get; set; }
-
-    
+    public virtual DbSet<Customer> Customers { get; set; }
 }
 

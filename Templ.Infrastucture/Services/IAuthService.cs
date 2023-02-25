@@ -3,5 +3,6 @@
 public interface IAuthService
 {
     string Token(string userId);
-    string? ValidateToken(string token);
+    string? TryGetTokenUser(string token);
+    (string?,string?) RefreshToken(string token);
 }

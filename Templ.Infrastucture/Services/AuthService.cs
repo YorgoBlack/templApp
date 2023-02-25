@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -28,10 +29,32 @@ public class AuthService : IAuthService
         return tokenHandler.WriteToken(token);
     }
 
-    public string? ValidateToken(string token)
+    public (string?,string?) RefreshToken(string token)
     {
-        if (token == null)
-            return null;
+        string? user = null;
+        string? reToken = null;
+
+        var securityToken = TryGetSecurityToken(token);
+        user = securityToken?.Claims.First(x => x.Type == "id").Value;
+        if( user != null )
+            reToken = securityToken?.ValidTo < DateTime.UtcNow ? token : Token(user);
+
+        return (user,reToken);
+    }
+
+    public string? TryGetTokenUser(string token)
+    {
+        var securityToken = TryGetSecurityToken(token);
+        if(securityToken != null)
+        {
+            return securityToken.Claims.First(x => x.Type == "id").Value;
+        }
+        return null;
+    }
+
+    private JwtSecurityToken? TryGetSecurityToken(string token)
+    {
+        if (token == null) return null;
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration.JwtSecretKey);
@@ -45,11 +68,8 @@ public class AuthService : IAuthService
                 ValidateAudience = false,
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
-
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = jwtToken.Claims.First(x => x.Type == "id").Value;
-
-            return userId;
+            
+            return (JwtSecurityToken) validatedToken;
         }
         catch
         {
